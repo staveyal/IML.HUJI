@@ -1,6 +1,6 @@
 from IMLearn.utils import split_train_test
 from IMLearn.learners.regressors import LinearRegression
-import tqdm
+import tqdmthe following problem is: lim $\sin$
 
 from typing import NoReturn, Optional
 import numpy as np
@@ -43,6 +43,7 @@ def preprocess_data(X: pd.DataFrame, y: Optional[pd.Series] = None):
     # We drop the rows with missing values, and price = 0 with the corresponding rows in y
     y = y.loc[X.index]
     y = y.drop(y[y <= 0].index)
+    y = y.dropna()
     return X.loc[y.index], y
 
 
@@ -91,7 +92,7 @@ if __name__ == '__main__':
     test_X, test_Y = preprocess_data(test_X, test_Y)
 
     # Question 3 - Feature evaluation with respect to response
-    feature_evaluation(train_X, train_Y, output_path=".")
+    # feature_evaluation(train_X, train_Y, output_path=".")
 
     # Question 4 - Fit model over increasing percentages of the overall training data
     # For every percentage p in 10%, 11%, ..., 100%, repeat the following 10 times:
@@ -107,7 +108,7 @@ if __name__ == '__main__':
         losses = []
         for _ in np.arange(1,10,1):
             x = train_X.sample(frac=percentage/100)
-            model.fit(x, train_Y.loc[x.index])
+            model.fit(x, train_Y[x.index])
             loss = model.loss(test_X, test_Y)
             losses.append(loss)
         mean = np.mean(losses)
