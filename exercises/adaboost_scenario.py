@@ -42,20 +42,38 @@ def fit_and_evaluate_adaboost(noise, n_learners=250, train_size=5000, test_size=
     (train_X, train_y), (test_X, test_y) = generate_data(train_size, noise), generate_data(test_size, noise)
 
     # Question 1: Train- and test errors of AdaBoost in noiseless case
-    raise NotImplementedError()
+    train = AdaBoost(DecisionStump, n_learners)
+    train.fit(train_X, train_y)
+    train_error = [train.partial_loss(train_X, train_y, t) for t in range(1, n_learners + 1)]
+    test_error = [train.partial_loss(test_X, test_y, t) for t in range(1, n_learners + 1)]
 
+    # fig = make_subplots(rows=1, cols=2, subplot_titles=['Train error', 'Test error'])
+    fig = go.Figure(
+        data=[
+            go.Scatter(x=np.arange(1, n_learners + 1), y=train_error, mode='lines', name='Train error'),
+            go.Scatter(x=np.arange(1, n_learners + 1), y=test_error, mode='lines', name='Test error'),
+        ]
+
+    )
+
+    fig.update_layout(title=f'Noise ratio: {noise}', xaxis_title='Number of learners', yaxis_title='Error')
+    fig.show(renderer="browser")
     # Question 2: Plotting decision surfaces
     T = [5, 50, 100, 250]
-    lims = np.array([np.r_[train_X, test_X].min(axis=0), np.r_[train_X, test_X].max(axis=0)]).T + np.array([-.1, .1])
-    raise NotImplementedError()
+    # lims = np.array([np.r_[train_X, test_X].min(axis=0), np.r_[train_X, test_X].max(axis=0)]).T + np.array([-.1, .1])
 
-    # Question 3: Decision surface of best performing ensemble
-    raise NotImplementedError()
+    # fig = make_subplots(rows=2, cols=2, subplot_titles=[f'T = {t}' for t in T])
+    # for i, t in enumerate(T):
+    #     fig.add_trace(decision_surface)
 
-    # Question 4: Decision surface with weighted samples
-    raise NotImplementedError()
+    # # Question 3: Decision surface of best performing ensemble
+    # raise NotImplementedError()
+
+    # # Question 4: Decision surface with weighted samples
+    # raise NotImplementedError()
 
 
 if __name__ == '__main__':
     np.random.seed(0)
-    raise NotImplementedError()
+    for noise in [0, 0.4]:
+        fit_and_evaluate_adaboost(noise)
